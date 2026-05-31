@@ -44,7 +44,7 @@ class RegistrationTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("form", response.context)
 
-    def test_valid_post_creates_user_and_authenticates(self):
+    def test_valid_post_creates_user_and_redirects_to_login(self):
         response = self.client.post(
             self.url,
             {
@@ -55,11 +55,11 @@ class RegistrationTests(TestCase):
             },
         )
         self.assertRedirects(
-            response, "/projects/list/", fetch_redirect_response=False
+            response, "/users/login/", fetch_redirect_response=False
         )
         user = User.objects.get(email="ivan@example.com")
         self.assertTrue(user.check_password("secret123"))
-        self.assertEqual(self.client.session.get("_auth_user_id"), str(user.id))
+        self.assertIsNone(self.client.session.get("_auth_user_id"))
 
     def test_duplicate_email_is_rejected(self):
         make_user("ivan@example.com")
@@ -124,13 +124,13 @@ class UserDetailsTests(TestCase):
 
 @override_settings(MEDIA_ROOT=TEMP_MEDIA)
 class UserListTests(TestCase):
-    def test_list_is_ordered_by_id(self):
+    def test_list_is_ordered_newest_first(self):
         first = make_user("a@example.com")
         second = make_user("b@example.com")
         response = self.client.get("/users/list/")
         self.assertEqual(response.status_code, 200)
         ids = [u.id for u in response.context["page_obj"]]
-        self.assertEqual(ids, sorted(ids))
+        self.assertEqual(ids, sorted(ids, reverse=True))
         self.assertIn(first, response.context["page_obj"])
         self.assertIn(second, response.context["page_obj"])
 
