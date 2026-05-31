@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login, logout, update_session_auth
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
-from team_finder.pagination import paginate
+from utils.pagination import paginate
 
 from .forms import ChangePasswordForm, EditProfileForm, LoginForm, RegisterForm
 from .models import User

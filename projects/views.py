@@ -3,7 +3,7 @@ from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
-from team_finder.pagination import paginate
+from utils.pagination import paginate
 
 from .forms import ProjectForm
 from .models import Project

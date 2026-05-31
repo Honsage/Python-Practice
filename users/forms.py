@@ -3,7 +3,7 @@ import re
 from django import forms
 from django.contrib.auth.forms import PasswordChangeForm
 
-from team_finder.validators import validate_github_url
+from utils.validators import validate_github_url
 
 from .models import User
 
