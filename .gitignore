@@ -1,3 +1,6 @@
+# Temporary files
+chore/
+media/avatars/*
 /team_finder/media/
 
 # Byte-compiled / optimized / DLL files
