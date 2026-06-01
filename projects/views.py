@@ -40,7 +40,7 @@ def _project_form_view(request, instance, is_edit):
             project.save()
             if not is_edit:
                 project.participants.add(request.user)
-            return redirect(f"/projects/{project.id}/")
+            return redirect("projects:details", project_id=project.id)
     else:
         form = ProjectForm(instance=instance)
     return render(

@@ -27,7 +27,7 @@ def register(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect("/users/login/")
+            return redirect("users:login")
     else:
         form = RegisterForm()
     return render(request, "users/register.html", {"form": form})
@@ -44,7 +44,7 @@ def login_view(request):
             )
             if user is not None:
                 login(request, user)
-                return redirect("/projects/list/")
+                return redirect("projects:list")
             form.add_error(None, "Неверный email или пароль")
     else:
         form = LoginForm()
@@ -53,7 +53,7 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return redirect("/projects/list/")
+    return redirect("projects:list")
 
 
 def user_list(request):
@@ -89,7 +89,7 @@ def edit_profile(request):
         form = EditProfileForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
             form.save()
-            return redirect(f"/users/{request.user.id}/")
+            return redirect("users:details", user_id=request.user.id)
     else:
         form = EditProfileForm(instance=request.user)
     return render(request, "users/edit_profile.html", {"form": form})
@@ -102,7 +102,7 @@ def change_password(request):
         if form.is_valid():
             form.save()
             update_session_auth_hash(request, form.user)
-            return redirect(f"/users/{request.user.id}/")
+            return redirect("users:details", user_id=request.user.id)
     else:
         form = PasswordChangeForm(user=request.user)
     return render(request, "users/change_password.html", {"form": form})
