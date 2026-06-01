@@ -1,4 +1,5 @@
 """Помощник постраничной пагинации для списков."""
+
 from django.core.paginator import Paginator
 
 PER_PAGE = 12

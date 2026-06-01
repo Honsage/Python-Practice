@@ -3,6 +3,7 @@
 Команда идемпотентна: повторный запуск не создаёт дубликатов.
 Пароль всех демо-пользователей – `password`.
 """
+
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
@@ -128,5 +129,7 @@ class Command(BaseCommand):
     def _link_demo_relations(self, users, projects):
         users["vera@example.com"].favorites.add(projects["Сервис уведомлений"])
         users["dmitry@example.com"].favorites.add(projects["Дизайн-система TeamFinder"])
-        projects["Дизайн-система TeamFinder"].participants.add(users["boris@example.com"])
+        projects["Дизайн-система TeamFinder"].participants.add(
+            users["boris@example.com"]
+        )
         projects["Инфраструктура CI/CD"].participants.add(users["anna@example.com"])

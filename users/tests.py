@@ -105,9 +105,7 @@ class LoginLogoutTests(TestCase):
             LOGIN_URL,
             {"email": USER_EMAIL, "password": PASSWORD},
         )
-        self.assertRedirects(
-            response, PROJECTS_LIST_URL, fetch_redirect_response=False
-        )
+        self.assertRedirects(response, PROJECTS_LIST_URL, fetch_redirect_response=False)
         self.assertEqual(self.client.session.get("_auth_user_id"), str(self.user.id))
 
     def test_login_with_wrong_password_shows_error(self):
@@ -122,9 +120,7 @@ class LoginLogoutTests(TestCase):
     def test_logout_redirects_home(self):
         self.client.force_login(self.user)
         response = self.client.get(LOGOUT_URL)
-        self.assertRedirects(
-            response, PROJECTS_LIST_URL, fetch_redirect_response=False
-        )
+        self.assertRedirects(response, PROJECTS_LIST_URL, fetch_redirect_response=False)
         self.assertIsNone(self.client.session.get("_auth_user_id"))
 
 

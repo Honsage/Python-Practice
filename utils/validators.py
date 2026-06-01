@@ -1,4 +1,5 @@
 """Валидаторы, общие для нескольких приложений."""
+
 from urllib.parse import urlparse
 
 from django.core.exceptions import ValidationError

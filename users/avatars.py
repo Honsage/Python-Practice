@@ -1,4 +1,5 @@
 """Генерация дефолтного аватара: первая буква имени на однотонном фоне."""
+
 import random
 from io import BytesIO
 
@@ -20,7 +21,9 @@ AVATAR_SIZE = 256
 LETTER_HEIGHT_RATIO = 0.5
 FALLBACK_LETTER = "?"
 
-FONT_PATH = settings.BASE_DIR / "static" / "fonts" / "Neue_Haas_Grotesk_Display_Pro_75_Bold.otf"
+FONT_PATH = (
+    settings.BASE_DIR / "static" / "fonts" / "Neue_Haas_Grotesk_Display_Pro_75_Bold.otf"
+)
 
 
 def generate_avatar(name, size=AVATAR_SIZE):

@@ -143,7 +143,12 @@ class EditProjectTests(TestCase):
         original_name = self.project.name
         response = self.client.post(
             f"/projects/{self.project.id}/edit/",
-            {"name": "Взломщик", "description": "", "github_url": "", "status": STATUS_OPEN},
+            {
+                "name": "Взломщик",
+                "description": "",
+                "github_url": "",
+                "status": STATUS_OPEN,
+            },
         )
         self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
         self.project.refresh_from_db()
