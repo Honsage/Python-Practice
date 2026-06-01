@@ -8,15 +8,22 @@ from utils.pagination import paginate
 from .forms import EditProfileForm, LoginForm, RegisterForm
 from .models import User
 
+FILTER_PARAM = "filter"
+
+FILTER_FAVORITE_OWNERS = "owners-of-favorite-projects"
+FILTER_PARTICIPATING_OWNERS = "owners-of-participating-projects"
+FILTER_INTERESTED = "interested-in-my-projects"
+FILTER_PARTICIPANTS = "participants-of-my-projects"
+
 USER_FILTERS = {
-    "owners-of-favorite-projects": lambda me: User.objects.filter(
+    FILTER_FAVORITE_OWNERS: lambda me: User.objects.filter(
         owned_projects__in=me.favorites.all()
     ),
-    "owners-of-participating-projects": lambda me: User.objects.filter(
+    FILTER_PARTICIPATING_OWNERS: lambda me: User.objects.filter(
         owned_projects__participants=me
     ),
-    "interested-in-my-projects": lambda me: User.objects.filter(favorites__owner=me),
-    "participants-of-my-projects": lambda me: User.objects.filter(
+    FILTER_INTERESTED: lambda me: User.objects.filter(favorites__owner=me),
+    FILTER_PARTICIPANTS: lambda me: User.objects.filter(
         participated_projects__owner=me
     ),
 }
@@ -58,13 +65,13 @@ def logout_view(request):
 
 def user_list(request):
     queryset = User.objects.all()
-    active_filter = request.GET.get("filter")
+    active_filter = request.GET.get(FILTER_PARAM)
     if request.user.is_authenticated and active_filter in USER_FILTERS:
         queryset = USER_FILTERS[active_filter](request.user).distinct()
     else:
         active_filter = None
 
-    query_prefix = f"filter={active_filter}&" if active_filter else ""
+    query_prefix = f"{FILTER_PARAM}={active_filter}&" if active_filter else ""
     page_obj = paginate(request, queryset)
     return render(
         request,

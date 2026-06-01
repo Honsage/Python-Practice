@@ -2,7 +2,7 @@ from django import forms
 
 from utils.validators import validate_github_url
 
-from .models import Project
+from .models import STATUS_CLOSED, STATUS_OPEN, Project
 
 
 class ProjectForm(forms.ModelForm):
@@ -10,7 +10,7 @@ class ProjectForm(forms.ModelForm):
 
     status = forms.ChoiceField(
         label="Статус",
-        choices=[("open", "Открыт"), ("closed", "Закрыт")],
+        choices=[(STATUS_OPEN, "Открыт"), (STATUS_CLOSED, "Закрыт")],
         widget=forms.Select,
     )
 

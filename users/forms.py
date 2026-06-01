@@ -6,8 +6,9 @@ from utils.validators import validate_github_url
 
 from .models import User
 
-_PHONE_FULL = re.compile(r"\+7\d{10}")
-_PHONE_EIGHT = re.compile(r"8\d{10}")
+PHONE_PREFIX = "+7"
+PHONE_FULL_RE = re.compile(r"\+7\d{10}")
+PHONE_EIGHT_RE = re.compile(r"8\d{10}")
 
 
 class RegisterForm(forms.ModelForm):
@@ -58,9 +59,9 @@ class EditProfileForm(forms.ModelForm):
         phone = (self.cleaned_data.get("phone") or "").strip()
         if not phone:
             raise forms.ValidationError("Укажите номер телефона")
-        if _PHONE_EIGHT.fullmatch(phone):
-            phone = "+7" + phone[1:]
-        elif not _PHONE_FULL.fullmatch(phone):
+        if PHONE_EIGHT_RE.fullmatch(phone):
+            phone = PHONE_PREFIX + phone[1:]
+        elif not PHONE_FULL_RE.fullmatch(phone):
             raise forms.ValidationError("Формат: 8XXXXXXXXXX или +7XXXXXXXXXX")
         duplicate = User.objects.filter(phone=phone).exclude(pk=self.instance.pk)
         if duplicate.exists():
