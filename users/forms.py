@@ -1,7 +1,6 @@
 import re
 
 from django import forms
-from django.contrib.auth.forms import PasswordChangeForm
 
 from utils.validators import validate_github_url
 
@@ -72,7 +71,3 @@ class EditProfileForm(forms.ModelForm):
         url = self.cleaned_data.get("github_url")
         validate_github_url(url)
         return url
-
-
-class ChangePasswordForm(PasswordChangeForm):
-    """Смена пароля: old_password, new_password1, new_password2."""

@@ -1,10 +1,11 @@
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
 from django.shortcuts import get_object_or_404, redirect, render
 
 from utils.pagination import paginate
 
-from .forms import ChangePasswordForm, EditProfileForm, LoginForm, RegisterForm
+from .forms import EditProfileForm, LoginForm, RegisterForm
 from .models import User
 
 USER_FILTERS = {
@@ -97,11 +98,11 @@ def edit_profile(request):
 @login_required
 def change_password(request):
     if request.method == "POST":
-        form = ChangePasswordForm(user=request.user, data=request.POST)
+        form = PasswordChangeForm(user=request.user, data=request.POST)
         if form.is_valid():
             form.save()
             update_session_auth_hash(request, form.user)
             return redirect(f"/users/{request.user.id}/")
     else:
-        form = ChangePasswordForm(user=request.user)
+        form = PasswordChangeForm(user=request.user)
     return render(request, "users/change_password.html", {"form": form})
