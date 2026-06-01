@@ -1,3 +1,6 @@
+from functools import wraps
+from http import HTTPStatus
+
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -6,7 +9,23 @@ from django.views.decorators.http import require_POST
 from utils.pagination import paginate
 
 from .forms import ProjectForm
-from .models import Project
+from .models import STATUS_CLOSED, STATUS_OPEN, Project
+
+
+def _with_project(view):
+    """Передаёт во view найденный проект или отдаёт статус 404 для AJAX."""
+
+    @wraps(view)
+    def wrapper(request, project_id, *args, **kwargs):
+        project = Project.objects.filter(pk=project_id).first()
+        if project is None:
+            return JsonResponse(
+                {"status": "error", "message": "Проект не найден"},
+                status=HTTPStatus.NOT_FOUND,
+            )
+        return view(request, project, *args, **kwargs)
+
+    return wrapper
 
 
 def project_list(request):
@@ -65,36 +84,36 @@ def edit_project(request, project_id):
 
 @require_POST
 @login_required
-def toggle_favorite(request, project_id):
-    project = get_object_or_404(Project, pk=project_id)
-    if request.user.favorites.filter(pk=project.pk).exists():
-        request.user.favorites.remove(project)
-        favorited = False
+@_with_project
+def toggle_favorite(request, project):
+    favorites = request.user.favorites
+    is_favorited = favorites.filter(pk=project.pk).exists()
+    if is_favorited:
+        favorites.remove(project)
     else:
-        request.user.favorites.add(project)
-        favorited = True
-    return JsonResponse({"status": "ok", "favorited": favorited})
+        favorites.add(project)
+    return JsonResponse({"status": "ok", "favorited": not is_favorited})
 
 
 @require_POST
 @login_required
-def toggle_participate(request, project_id):
-    project = get_object_or_404(Project, pk=project_id)
-    if project.participants.filter(pk=request.user.pk).exists():
-        project.participants.remove(request.user)
-        participant = False
+@_with_project
+def toggle_participate(request, project):
+    participants = project.participants
+    is_participant = participants.filter(pk=request.user.pk).exists()
+    if is_participant:
+        participants.remove(request.user)
     else:
-        project.participants.add(request.user)
-        participant = True
-    return JsonResponse({"status": "ok", "participant": participant})
+        participants.add(request.user)
+    return JsonResponse({"status": "ok", "participant": not is_participant})
 
 
 @require_POST
 @login_required
-def complete_project(request, project_id):
-    project = get_object_or_404(Project, pk=project_id)
-    if project.owner_id != request.user.id or project.status != "open":
-        return JsonResponse({"status": "error"}, status=403)
-    project.status = "closed"
+@_with_project
+def complete_project(request, project):
+    if project.owner_id != request.user.id or project.status != STATUS_OPEN:
+        return JsonResponse({"status": "error"}, status=HTTPStatus.FORBIDDEN)
+    project.status = STATUS_CLOSED
     project.save(update_fields=["status"])
-    return JsonResponse({"status": "ok", "project_status": "closed"})
+    return JsonResponse({"status": "ok", "project_status": STATUS_CLOSED})
