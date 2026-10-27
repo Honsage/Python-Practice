@@ -25,3 +25,7 @@ This repo contains labs and projects that are written in order to practice devel
 *Study project* to practice full-stack Django application. It's platform of finding team for projects. 
 
 ## Other Sections
+
+### KNN Visualizer
+
+*Project*. Simple GUI program obviously visualizes the principle of KNN (K-nearest neighbours) method.
