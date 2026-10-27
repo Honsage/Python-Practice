@@ -26,7 +26,7 @@ TIMEOUT_ASSERT_MSG = (
 
 
 def import_the_snake():
-    import the_snake  # noqa
+    import YP_Snake.the_snake as the_snake  # noqa
 
 
 @pytest.fixture(scope='session')
@@ -43,7 +43,7 @@ def snake_import_test():
 @pytest.fixture(scope='session')
 def _the_snake(snake_import_test):
     try:
-        import the_snake
+        import YP_Snake.the_snake as the_snake
     except ImportError as error:
         raise AssertionError(
             'При импорте модуль `the_snake` произошла ошибка:\n'
