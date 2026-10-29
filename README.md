@@ -29,3 +29,7 @@ This repo contains labs and projects that are written in order to practice devel
 ### KNN Visualizer
 
 *Project*. Simple GUI program obviously visualizes the principle of KNN (K-nearest neighbours) method.
+
+### Primarius Bot
+
+*Project*. Telegram bot that sends images of cats by using external API. Just for practice TG bots.
